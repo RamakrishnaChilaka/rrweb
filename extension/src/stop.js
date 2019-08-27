@@ -20,12 +20,12 @@ var content = `
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Record @${time}</title>
-    <link rel="stylesheet" href="http://localhost:8887/dist/rrweb.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/style.css" />
     <script src="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/index.js"></script>
   </head>
   <body>
-    <script src="http://localhost:8887/dist/rrweb.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>
     <script>
       /*<!--*/
       const events = ${JSON.stringify(events).replace(
