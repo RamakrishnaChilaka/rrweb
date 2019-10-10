@@ -8,6 +8,7 @@
     "bundle:browser": "cross-env BROWSER_ONLY=true rollup --config",
     "bundleStartBrowser": "cross-env BROWSER_ONLY=true rollup --config -w",
     "bundle": "rollup --config",
+    "bundleDev": "rollup --config -w",
     "typings": "tsc -d --declarationDir typings"
   },
   "repository": {
@@ -19,6 +20,7 @@
   ],
   "main": "lib/rrweb.js",
   "module": "es/rrweb.js",
+  "reactPlayer": "sessions-player/sessionLibs/ESrrweb.js",
   "unpkg": "dist/rrweb.js",
   "typings": "typings/index.d.ts",
   "files": [
