@@ -907,7 +907,7 @@ var rrwebPlayer = (function () {
 	            .forEach;
 	    }
 	}
-	//# sourceMappingURL=utils.js.map
+
 
 	var EventType;
 	(function (EventType) {
@@ -955,7 +955,7 @@ var rrwebPlayer = (function () {
 	    ReplayerEvents["SkipEnd"] = "skip-end";
 	    ReplayerEvents["MouseInteraction"] = "mouse-interaction";
 	})(ReplayerEvents || (ReplayerEvents = {}));
-	//# sourceMappingURL=index.js.map
+
 
 	//      
 	// An event handler can take an optional event argument
@@ -1018,7 +1018,7 @@ var rrwebPlayer = (function () {
 			}
 		};
 	}
-	//# sourceMappingURL=mitt.es.js.map
+
 
 	var mittProxy = /*#__PURE__*/Object.freeze({
 	    default: mitt
@@ -1536,13 +1536,13 @@ var rrwebPlayer = (function () {
 	    };
 	    return Timer;
 	}());
-	//# sourceMappingURL=timer.js.map
+
 
 	var rules = function (blockClass) { return [
 	    "iframe, ." + blockClass + " { background: #ccc }",
 	    'noscript { display: none !important; }',
 	]; };
-	//# sourceMappingURL=inject-style.js.map
+
 
 	var SKIP_TIME_THRESHOLD = 10 * 1000;
 	var SKIP_TIME_INTERVAL = 5 * 1000;
@@ -1687,7 +1687,6 @@ var rrwebPlayer = (function () {
 	        this.iframe = document.createElement('iframe');
 	        this.iframe.setAttribute('sandbox', 'allow-same-origin');
 	        this.iframe.setAttribute('scrolling', 'no');
-	        this.iframe.setAttribute('style', 'pointer-events: none');
 	        this.wrapper.appendChild(this.iframe);
 	    };
 	    Replayer.prototype.handleResize = function (dimension) {

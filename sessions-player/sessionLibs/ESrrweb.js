@@ -2350,7 +2350,6 @@ var Replayer = (function () {
         this.iframe = document.createElement('iframe');
         this.iframe.setAttribute('sandbox', 'allow-same-origin');
         this.iframe.setAttribute('scrolling', 'no');
-        this.iframe.setAttribute('style', 'pointer-events: none');
         this.wrapper.appendChild(this.iframe);
     };
     Replayer.prototype.handleResize = function (dimension) {
@@ -2756,7 +2755,6 @@ var Replayer = (function () {
     };
     return Replayer;
 }());
-//# sourceMappingURL=index.js.map
 
 var addCustomEvent = record.addCustomEvent;
 //# sourceMappingURL=index.js.map
