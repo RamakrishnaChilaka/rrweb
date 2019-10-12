@@ -1,9 +1,7 @@
 import React from 'react';
 
-import '../../sessionlibs/rrweb.min.css';
-
+import '../../../sessionLibs/ESrrweb.css';
 import { cleanAndAddData } from '../../utils';
-
 import { connect } from 'react-redux';
 import {
   kickStartSessions,
@@ -17,17 +15,14 @@ class SessionPlayer extends React.Component {
     super(props);
 
     this.sessionId = props.sessionId;
-    // this.sessionId = 'zmjgbrn8qi5ej58j9h6ii';
-    this.kickStartedForGreaterThan2 = false;
+    this.kickStartedForGreaterThan3 = false;
   }
 
   componentDidMount() {
-    // kick start the fetching of the events
     this.props.fetchMetaData({ sessionId: this.sessionId });
   }
 
   componentDidUpdate() {
-    // do we have values
     var totalNumberOfBlocks = this.props.totalNumberOfBlocks;
     if (totalNumberOfBlocks && !this.kickStartedForGreaterThan3) {
       this.kickStartedForGreaterThan3 = true;
@@ -37,12 +32,10 @@ class SessionPlayer extends React.Component {
       });
     }
     if (this.props.sessionData) {
-      console.log('this.props.sessionData 40.js ', this.props.sessionData);
       var { lastConcatedIndex } = cleanAndAddData({
         globalValues: this.props.sessionData,
         lastConcatedIndex: this.props.lastConcatedIndex,
       });
-      console.log('45lastConcatedIndex ', lastConcatedIndex);
       this.props.updateLastConcatedIndex({ lastConcatedIndex });
     }
   }
@@ -59,7 +52,6 @@ class SessionPlayer extends React.Component {
 // connect to store
 const mapStateToProps = state => {
   const { Sessions } = state;
-  console.log('sessions data is ', state);
   return {
     ...Sessions,
   };

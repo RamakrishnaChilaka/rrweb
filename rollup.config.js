@@ -31,7 +31,7 @@ let configs = [
       commonjs(),
       typescript(),
       postcss({
-        extract: false,
+        extract: true,
         inject: false,
       }),
     ],

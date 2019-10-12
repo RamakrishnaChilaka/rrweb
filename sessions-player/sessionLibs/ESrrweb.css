@@ -1,7 +1,8 @@
+body {
+  margin: 0;
+}
 .replayer-wrapper {
   position: relative;
-  transform: scale(0.7);
-  translate: ;
 }
 .replayer-mouse {
   position: absolute;
@@ -9,27 +10,30 @@
   height: auto;
   transition: 0.05s linear;
   background-size: contain;
-  background-position: 50%;
+  background-position: center center;
   background-repeat: no-repeat;
-  background-image: url(../../pointer.png);
-  z-index: 2;
+  background-image: url('http://localhost:8887/pointer.png');
+  z-index: 2147483646;
 }
-.replayer-mouse:after {
+.replayer-mouse::after {
   content: '';
-  background: '#dfee2a';
-  z-index: 1;
+  background: '#DFEE2A';
+  z-index: 2147483645;
   display: inline-block;
-  opacity: 0.45;
+  opacity: .45;
   width: 20px;
   height: 20px;
   border-radius: 10px;
+  /* background: rgb(73, 80, 246); */
   transform: translate(-10px, -10px);
   opacity: 0.3;
 }
-.replayer-mouse.active:after {
-  animation: a 0.2s ease-in-out 1;
+
+.replayer-mouse.active::after {
+  animation: click 0.2s ease-in-out 1;
 }
-@keyframes a {
+
+@keyframes click {
   0% {
     opacity: 0.3;
     width: 20px;

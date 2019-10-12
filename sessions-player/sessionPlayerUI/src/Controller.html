@@ -129,6 +129,7 @@
       },
       play() {
         const { replayer, currentTime } = this.get();
+        console.log("inside play replayer and currentTime is ", replayer, currentTime)
         if (currentTime > 0) {
           replayer.resume(currentTime);
         } else {
@@ -137,10 +138,13 @@
         }
       },
       pause() {
+        console.log("inside sessionPlayer pause")
         const { replayer } = this.get();
         replayer.pause();
       },
       toggle() {
+        console.log("inside toggle pressed toggle ");
+        console.log("inside toggle this.playing ", this.get().isPlaying);
         const { isPlaying } = this.get();
         if (isPlaying) {
           this.pause();
@@ -180,6 +184,7 @@
       },
     },
     onupdate({ changed, current, previous }) {
+      console.log("inside onupdate is ", JSON.stringify(changed), current, previous );
       if (current.replayer && !previous) {
         window.replayer = current.replayer;
         setTimeout(() => {
@@ -193,15 +198,19 @@
               firstFullSnapshotRebuilded = true;
               current.replayer.pause();
             }
+            console.log("first full snapshot rebuilded ", firstFullSnapshotRebuilded);
           });
         }
         current.replayer.on('pause', () => {
+          console.log("pause event");
           this.set({ isPlaying: false });
         });
         current.replayer.on('resume', () => {
+          console.log("resume event");
           this.set({ isPlaying: true });
         });
         current.replayer.on('finish', () => {
+          console.log("finish event");
           this.timer = null;
           this.set({ isPlaying: false, currentTime: 0 });
         });
@@ -224,6 +233,7 @@
       }
     },
     ondestroy() {
+      console.log("inside ondestroy");
       const { isPlaying } = this.get();
       if (isPlaying) {
         this.pause();

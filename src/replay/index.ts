@@ -122,7 +122,9 @@ export class Replayer {
    * @param timeOffset number
    */
   public play(timeOffset = 0) {
+    console.log('replay play ');
     this.timer.clear();
+    console.log('this.events in play replay ', this.events, this.events.length)
     this.baselineTime = this.events[0].timestamp + timeOffset;
     const actions = new Array<actionWithDelay>();
     for (const event of this.events) {
@@ -139,11 +141,10 @@ export class Replayer {
     this.emitter.emit(ReplayerEvents.Start);
   }
 
-  public convertBufferedEventsToActionsAndAddToTimer(
-    bufferedEvents: eventWithTime[],
-  ) {
+  public convertBufferedEventsToActionsAndAddToTimer(bufferedEvents: eventWithTime[]) {
     const actions = new Array<actionWithDelay>();
     for (const event of bufferedEvents) {
+      this.events.push(event);
       const castFn = this.getCastFn(event);
       actions.push({ doAction: castFn, delay: this.getDelay(event) });
     }
@@ -152,28 +153,33 @@ export class Replayer {
 
   public customPause() {
     // custom pause that calls pause in timer
+    console.log('inside custom pause');
     this.timer.pause();
+    this.emitter.emit(ReplayerEvents.Pause);
   }
 
   public customResume() {
     // custom resume that calls resume in timer
+    console.log('inside customResume');
     this.timer.resume();
+    this.emitter.emit(ReplayerEvents.Resume);
   }
 
   public pause() {
+    this.customPause();
+    return;
     this.timer.clear();
     this.emitter.emit(ReplayerEvents.Pause);
   }
 
   public resume(timeOffset = 0) {
+    this.customResume();
+    return;
     this.timer.clear();
     this.baselineTime = this.events[0].timestamp + timeOffset;
     const actions = new Array<actionWithDelay>();
     for (const event of this.events) {
-      if (
-        event.timestamp <= this.lastPlayedEvent.timestamp ||
-        event === this.lastPlayedEvent
-      ) {
+      if (event.timestamp <= this.lastPlayedEvent.timestamp || event === this.lastPlayedEvent) {
         continue;
       }
       const castFn = this.getCastFn(event);
@@ -263,10 +269,7 @@ export class Replayer {
                 continue;
               }
               if (this.isUserInteraction(_event)) {
-                if (
-                  _event.delay! - event.delay! >
-                  SKIP_TIME_THRESHOLD * this.config.speed
-                ) {
+                if (_event.delay! - event.delay! > SKIP_TIME_THRESHOLD * this.config.speed) {
                   this.nextUserInteractionEvent = _event;
                 }
                 break;
@@ -274,8 +277,7 @@ export class Replayer {
             }
             if (this.nextUserInteractionEvent) {
               this.noramlSpeed = this.config.speed;
-              const skipTime =
-                this.nextUserInteractionEvent.delay! - event.delay!;
+              const skipTime = this.nextUserInteractionEvent.delay! - event.delay!;
               const payload = {
                 speed: Math.min(Math.round(skipTime / SKIP_TIME_INTERVAL), 360),
               };
@@ -300,23 +302,18 @@ export class Replayer {
     return wrappedCastFn;
   }
 
-  private rebuildFullSnapshot(
-    event: fullSnapshotEvent & { timestamp: number },
-  ) {
+  private rebuildFullSnapshot(event: fullSnapshotEvent & { timestamp: number }) {
     if (Object.keys(this.missingNodeRetryMap).length) {
-      console.warn(
-        'Found unresolved missing node map',
-        this.missingNodeRetryMap,
-      );
+      console.warn('Found unresolved missing node map', this.missingNodeRetryMap);
     }
     this.missingNodeRetryMap = {};
     mirror.map = rebuild(event.data.node, this.iframe.contentDocument!)[1];
     const styleEl = document.createElement('style');
     const { documentElement, head } = this.iframe.contentDocument!;
     documentElement!.insertBefore(styleEl, head);
-    const injectStylesRules = getInjectStyleRules(
-      this.config.blockClass,
-    ).concat(this.config.insertStyleRules);
+    const injectStylesRules = getInjectStyleRules(this.config.blockClass).concat(
+      this.config.insertStyleRules,
+    );
     for (let idx = 0; idx < injectStylesRules.length; idx++) {
       (styleEl.sheet! as CSSStyleSheet).insertRule(injectStylesRules[idx], idx);
     }
@@ -332,39 +329,34 @@ export class Replayer {
     if (head) {
       const unloadSheets: Set<HTMLLinkElement> = new Set();
       let timer: number;
-      head
-        .querySelectorAll('link[rel="stylesheet"]')
-        .forEach((css: HTMLLinkElement) => {
-          if (!css.sheet) {
-            if (unloadSheets.size === 0) {
-              this.pause();
-              this.emitter.emit(ReplayerEvents.LoadStylesheetStart);
-              timer = window.setTimeout(() => {
-                this.resume(this.getCurrentTime());
-                // mark timer was called
-                timer = -1;
-              }, this.config.loadTimeout);
-            }
-            unloadSheets.add(css);
-            css.addEventListener('load', () => {
-              unloadSheets.delete(css);
-              if (unloadSheets.size === 0 && timer !== -1) {
-                this.resume(this.getCurrentTime());
-                this.emitter.emit(ReplayerEvents.LoadStylesheetEnd);
-                if (timer) {
-                  window.clearTimeout(timer);
-                }
-              }
-            });
+      head.querySelectorAll('link[rel="stylesheet"]').forEach((css: HTMLLinkElement) => {
+        if (!css.sheet) {
+          if (unloadSheets.size === 0) {
+            this.pause();
+            this.emitter.emit(ReplayerEvents.LoadStylesheetStart);
+            timer = window.setTimeout(() => {
+              this.resume(this.getCurrentTime());
+              // mark timer was called
+              timer = -1;
+            }, this.config.loadTimeout);
           }
-        });
+          unloadSheets.add(css);
+          css.addEventListener('load', () => {
+            unloadSheets.delete(css);
+            if (unloadSheets.size === 0 && timer !== -1) {
+              this.resume(this.getCurrentTime());
+              this.emitter.emit(ReplayerEvents.LoadStylesheetEnd);
+              if (timer) {
+                window.clearTimeout(timer);
+              }
+            }
+          });
+        }
+      });
     }
   }
 
-  private applyIncremental(
-    e: incrementalSnapshotEvent & { timestamp: number },
-    isSync: boolean,
-  ) {
+  private applyIncremental(e: incrementalSnapshotEvent & { timestamp: number }, isSync: boolean) {
     const { data: d } = e;
     switch (d.source) {
       case IncrementalSource.Mutation: {
@@ -415,11 +407,7 @@ export class Replayer {
             return;
           }
 
-          if (
-            previous &&
-            previous.nextSibling &&
-            previous.nextSibling.parentNode
-          ) {
+          if (previous && previous.nextSibling && previous.nextSibling.parentNode) {
             parent.insertBefore(target, previous.nextSibling);
           } else if (next && next.parentNode) {
             parent.insertBefore(target, next);
@@ -464,10 +452,7 @@ export class Replayer {
             if (typeof attributeName === 'string') {
               const value = mutation.attributes[attributeName];
               if (value !== null) {
-                ((target as Node) as Element).setAttribute(
-                  attributeName,
-                  value,
-                );
+                ((target as Node) as Element).setAttribute(attributeName, value);
               } else {
                 ((target as Node) as Element).removeAttribute(attributeName);
               }
@@ -646,11 +631,9 @@ export class Replayer {
   }
 
   private hoverElements(el: Element) {
-    this.iframe
-      .contentDocument!.querySelectorAll('.\\:hover')
-      .forEach(hoveredEl => {
-        hoveredEl.classList.remove(':hover');
-      });
+    this.iframe.contentDocument!.querySelectorAll('.\\:hover').forEach(hoveredEl => {
+      hoveredEl.classList.remove(':hover');
+    });
     let currentEl: Element | null = el;
     while (currentEl) {
       currentEl.classList.add(':hover');
@@ -663,8 +646,7 @@ export class Replayer {
       return false;
     }
     return (
-      event.data.source > IncrementalSource.Mutation &&
-      event.data.source <= IncrementalSource.Input
+      event.data.source > IncrementalSource.Mutation && event.data.source <= IncrementalSource.Input
     );
   }
 

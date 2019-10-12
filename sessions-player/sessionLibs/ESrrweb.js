@@ -1024,6 +1024,7 @@ function polyfill() {
             .forEach;
     }
 }
+//# sourceMappingURL=utils.js.map
 
 var EventType;
 (function (EventType) {
@@ -1071,6 +1072,7 @@ var ReplayerEvents;
     ReplayerEvents["SkipEnd"] = "skip-end";
     ReplayerEvents["MouseInteraction"] = "mouse-interaction";
 })(ReplayerEvents || (ReplayerEvents = {}));
+//# sourceMappingURL=types.js.map
 
 function deepDelete(addsSet, n) {
     addsSet["delete"](n);
@@ -1097,6 +1099,7 @@ function isAncestorInSet(set, n) {
     }
     return isAncestorInSet(set, parentNode);
 }
+//# sourceMappingURL=collection.js.map
 
 var moveKey = function (id, parentId) { return id + "@" + parentId; };
 function isINode(n) {
@@ -1469,6 +1472,7 @@ function initObservers(o) {
         inputHandler();
     };
 }
+//# sourceMappingURL=observer.js.map
 
 function wrapEvent(e) {
     return __assign({}, e, { timestamp: Date.now() });
@@ -1614,6 +1618,7 @@ record.addCustomEvent = function (tag, payload) {
         }
     }));
 };
+//# sourceMappingURL=index.js.map
 
 //      
 // An event handler can take an optional event argument
@@ -1676,6 +1681,7 @@ function mitt(all                 ) {
 		}
 	};
 }
+//# sourceMappingURL=mitt.es.js.map
 
 var mittProxy = /*#__PURE__*/Object.freeze({
     default: mitt
@@ -2193,11 +2199,13 @@ var Timer = (function () {
     };
     return Timer;
 }());
+//# sourceMappingURL=timer.js.map
 
 var rules = function (blockClass) { return [
     "iframe, ." + blockClass + " { background: #ccc }",
     'noscript { display: none !important; }',
 ]; };
+//# sourceMappingURL=inject-style.js.map
 
 var SKIP_TIME_THRESHOLD = 10 * 1000;
 var SKIP_TIME_INTERVAL = 5 * 1000;
@@ -2260,7 +2268,9 @@ var Replayer = (function () {
     };
     Replayer.prototype.play = function (timeOffset) {
         if (timeOffset === void 0) { timeOffset = 0; }
+        console.log('replay play ');
         this.timer.clear();
+        console.log('this.events in play replay ', this.events, this.events.length);
         this.baselineTime = this.events[0].timestamp + timeOffset;
         var actions = new Array();
         for (var _i = 0, _a = this.events; _i < _a.length; _i++) {
@@ -2282,30 +2292,38 @@ var Replayer = (function () {
         var actions = new Array();
         for (var _i = 0, bufferedEvents_1 = bufferedEvents; _i < bufferedEvents_1.length; _i++) {
             var event = bufferedEvents_1[_i];
+            this.events.push(event);
             var castFn = this.getCastFn(event);
             actions.push({ doAction: castFn, delay: this.getDelay(event) });
         }
         this.timer.addActions(actions);
     };
     Replayer.prototype.customPause = function () {
+        console.log('inside custom pause');
         this.timer.pause();
+        this.emitter.emit(ReplayerEvents.Pause);
     };
     Replayer.prototype.customResume = function () {
+        console.log('inside customResume');
         this.timer.resume();
+        this.emitter.emit(ReplayerEvents.Resume);
     };
     Replayer.prototype.pause = function () {
+        this.customPause();
+        return;
         this.timer.clear();
         this.emitter.emit(ReplayerEvents.Pause);
     };
     Replayer.prototype.resume = function (timeOffset) {
         if (timeOffset === void 0) { timeOffset = 0; }
+        this.customResume();
+        return;
         this.timer.clear();
         this.baselineTime = this.events[0].timestamp + timeOffset;
         var actions = new Array();
         for (var _i = 0, _a = this.events; _i < _a.length; _i++) {
             var event = _a[_i];
-            if (event.timestamp <= this.lastPlayedEvent.timestamp ||
-                event === this.lastPlayedEvent) {
+            if (event.timestamp <= this.lastPlayedEvent.timestamp || event === this.lastPlayedEvent) {
                 continue;
             }
             var castFn = this.getCastFn(event);
@@ -2386,8 +2404,7 @@ var Replayer = (function () {
                                 continue;
                             }
                             if (_this.isUserInteraction(_event)) {
-                                if (_event.delay - event.delay >
-                                    SKIP_TIME_THRESHOLD * _this.config.speed) {
+                                if (_event.delay - event.delay > SKIP_TIME_THRESHOLD * _this.config.speed) {
                                     _this.nextUserInteractionEvent = _event;
                                 }
                                 break;
@@ -2441,9 +2458,7 @@ var Replayer = (function () {
         if (head) {
             var unloadSheets_1 = new Set();
             var timer_1;
-            head
-                .querySelectorAll('link[rel="stylesheet"]')
-                .forEach(function (css) {
+            head.querySelectorAll('link[rel="stylesheet"]').forEach(function (css) {
                 if (!css.sheet) {
                     if (unloadSheets_1.size === 0) {
                         _this.pause();
@@ -2510,9 +2525,7 @@ var Replayer = (function () {
                         };
                         return;
                     }
-                    if (previous &&
-                        previous.nextSibling &&
-                        previous.nextSibling.parentNode) {
+                    if (previous && previous.nextSibling && previous.nextSibling.parentNode) {
                         parent.insertBefore(target, previous.nextSibling);
                     }
                     else if (next && next.parentNode) {
@@ -2705,9 +2718,7 @@ var Replayer = (function () {
         this.hoverElements(target);
     };
     Replayer.prototype.hoverElements = function (el) {
-        this.iframe
-            .contentDocument.querySelectorAll('.\\:hover')
-            .forEach(function (hoveredEl) {
+        this.iframe.contentDocument.querySelectorAll('.\\:hover').forEach(function (hoveredEl) {
             hoveredEl.classList.remove(':hover');
         });
         var currentEl = el;
@@ -2720,8 +2731,7 @@ var Replayer = (function () {
         if (event.type !== EventType.IncrementalSnapshot) {
             return false;
         }
-        return (event.data.source > IncrementalSource.Mutation &&
-            event.data.source <= IncrementalSource.Input);
+        return (event.data.source > IncrementalSource.Mutation && event.data.source <= IncrementalSource.Input);
     };
     Replayer.prototype.restoreSpeed = function () {
         if (this.noramlSpeed === -1) {
@@ -2746,7 +2756,9 @@ var Replayer = (function () {
     };
     return Replayer;
 }());
+//# sourceMappingURL=index.js.map
 
 var addCustomEvent = record.addCustomEvent;
+//# sourceMappingURL=index.js.map
 
 export { record, addCustomEvent, Replayer, mirror, EventType, IncrementalSource, MouseInteractions, ReplayerEvents };

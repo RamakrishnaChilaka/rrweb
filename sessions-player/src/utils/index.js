@@ -1,6 +1,7 @@
 import sessionPlayerUI from '../../sessionPlayerUI/dist/index.mjs';
 import '../../sessionPlayerUI/dist/style.css';
-import { Replayer } from '../sessionlibs/rrweb.js';
+// import { Replayer } from '../sessionlibs/rrweb.js';
+import { Replayer } from '../../sessionLibs/ESrrweb.js';
 var replayer = null;
 var rootIframeId = 'jankay';
 var isPlaying = false;
@@ -58,14 +59,14 @@ export function cleanAndAddData({ globalValues, lastConcatedIndex }) {
       lastConcatedIndex++;
       if (!replayer) {
         /*
-        window.replayer = replayer = new Replayer(nextEvent.events, {
-          showWarning: true,
-          root: document.getElementById(rootIframeId),
-        });
-        */
+          window.replayer = replayer = new Replayer(nextEvent.events, {
+            showWarning: true,
+            root: document.getElementById(rootIframeId),
+          });
+          */
         baseLineTime = nextEvent.events[0].timestamp;
         window.sessionPlayerUI = replayer = new sessionPlayerUI({
-          target: document.body,
+          target: document.getElementById('jankay'),
           data: {
             events: nextEvent.events,
             autoPlay: true,
@@ -73,6 +74,7 @@ export function cleanAndAddData({ globalValues, lastConcatedIndex }) {
         });
       } else {
         if (!isPlaying) {
+          // TODO: fix this, play is always executing because it always goes inside if
           play();
         }
         //        replayer.convertBufferedEventsToActionsAndAddToTimer(nextEvent.events);
