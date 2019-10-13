@@ -87,7 +87,7 @@
         currentTime: 0,
         isPlaying: false,
         isSkipping: false,
-        skipInactive: true,
+        skipInactive: false,
         speed: 1,
       };
     },
@@ -190,7 +190,6 @@
         setTimeout(() => {
           this.set({ isPlaying: true });
         }, 0);
-        current.replayer.play(0);
         if (!current.autoPlay) {
           let firstFullSnapshotRebuilded = false;
           current.replayer.on('fullsnapshot-rebuilded', () => {
@@ -201,6 +200,10 @@
             console.log("first full snapshot rebuilded ", firstFullSnapshotRebuilded);
           });
         }
+        current.replayer.play();
+        current.replayer.on('fullsnapshot-rebuilded', () => {
+          console.log("plain old full snapshot-rebuilded");
+        });
         current.replayer.on('pause', () => {
           console.log("pause event");
           this.set({ isPlaying: false });
@@ -215,10 +218,12 @@
           this.set({ isPlaying: false, currentTime: 0 });
         });
         current.replayer.on('skip-start', payload => {
+          console.log("skip-start event");
           payload.isSkipping = true;
           this.set(payload);
         });
         current.replayer.on('skip-end', payload => {
+          console.log("skip-end event");
           payload.isSkipping = false;
           this.set(payload);
         });

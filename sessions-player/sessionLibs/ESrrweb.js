@@ -2143,7 +2143,28 @@ var Timer = (function () {
         this.customClear();
     };
     Timer.prototype.resume = function () {
-        this.start();
+        this.actions.sort(function (a1, a2) { return a1.delay - a2.delay; });
+        var lastTimestamp = performance.now();
+        var _a = this, actions = _a.actions, config = _a.config;
+        var self = this;
+        function check(time) {
+            self.timeOffset += (time - lastTimestamp) * config.speed;
+            lastTimestamp = time;
+            while (actions.length) {
+                var action = actions[0];
+                if (self.timeOffset >= action.delay) {
+                    actions.shift();
+                    action.doAction();
+                }
+                else {
+                    break;
+                }
+            }
+            if (actions.length > 0 || self.config.liveMode) {
+                self.raf = requestAnimationFrame(check);
+            }
+        }
+        this.raf = requestAnimationFrame(check);
     };
     Timer.prototype.customClear = function () {
         if (this.raf) {
@@ -2152,6 +2173,7 @@ var Timer = (function () {
     };
     Timer.prototype.start = function () {
         this.actions.sort(function (a1, a2) { return a1.delay - a2.delay; });
+        this.timeOffset = 0;
         var lastTimestamp = performance.now();
         var _a = this, actions = _a.actions, config = _a.config;
         var self = this;
@@ -2199,7 +2221,6 @@ var Timer = (function () {
     };
     return Timer;
 }());
-//# sourceMappingURL=timer.js.map
 
 var rules = function (blockClass) { return [
     "iframe, ." + blockClass + " { background: #ccc }",
@@ -2268,7 +2289,7 @@ var Replayer = (function () {
     };
     Replayer.prototype.play = function (timeOffset) {
         if (timeOffset === void 0) { timeOffset = 0; }
-        console.log('replay play ');
+        console.log('replay play ', timeOffset);
         this.timer.clear();
         console.log('this.events in play replay ', this.events, this.events.length);
         this.baselineTime = this.events[0].timestamp + timeOffset;
@@ -2284,6 +2305,7 @@ var Replayer = (function () {
                 actions.push({ doAction: castFn, delay: this.getDelay(event) });
             }
         }
+        console.log("action are ", actions);
         this.timer.addActions(actions);
         this.timer.start();
         this.emitter.emit(ReplayerEvents.Start);
@@ -2755,6 +2777,7 @@ var Replayer = (function () {
     };
     return Replayer;
 }());
+//# sourceMappingURL=index.js.map
 
 var addCustomEvent = record.addCustomEvent;
 //# sourceMappingURL=index.js.map

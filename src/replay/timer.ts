@@ -35,7 +35,32 @@ export default class Timer {
 
   public resume() {
     // custom pause the timer action list
-    this.start();
+    // this.start();
+    // before we were calling this.start(),
+    // which has a bad consequence of playing everything from start
+    // which is not what we want
+    this.actions.sort((a1, a2) => a1.delay - a2.delay);
+    // this.timeOffset = 0;
+    let lastTimestamp = performance.now();
+    const { actions, config } = this;
+    const self = this;
+    function check(time: number) {
+      self.timeOffset += (time - lastTimestamp) * config.speed;
+      lastTimestamp = time;
+      while (actions.length) {
+        const action = actions[0];
+        if (self.timeOffset >= action.delay) {
+          actions.shift();
+          action.doAction();
+        } else {
+          break;
+        }
+      }
+      if (actions.length > 0 || self.config.liveMode) {
+        self.raf = requestAnimationFrame(check);
+      }
+    }
+    this.raf = requestAnimationFrame(check);
   }
 
   public customClear() {
@@ -47,7 +72,7 @@ export default class Timer {
 
   public start() {
     this.actions.sort((a1, a2) => a1.delay - a2.delay);
-    // this.timeOffset = 0;
+    this.timeOffset = 0;
     let lastTimestamp = performance.now();
     const { actions, config } = this;
     const self = this;

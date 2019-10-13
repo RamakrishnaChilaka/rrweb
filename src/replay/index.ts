@@ -122,7 +122,7 @@ export class Replayer {
    * @param timeOffset number
    */
   public play(timeOffset = 0) {
-    console.log('replay play ');
+    console.log('replay play ', timeOffset);
     this.timer.clear();
     console.log('this.events in play replay ', this.events, this.events.length)
     this.baselineTime = this.events[0].timestamp + timeOffset;
@@ -136,6 +136,7 @@ export class Replayer {
         actions.push({ doAction: castFn, delay: this.getDelay(event) });
       }
     }
+    console.log("action are ", actions);
     this.timer.addActions(actions);
     this.timer.start();
     this.emitter.emit(ReplayerEvents.Start);
