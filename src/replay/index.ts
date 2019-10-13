@@ -96,6 +96,7 @@ export class Replayer {
     }
   }
 
+  // TODO: remove the following function, it is useless in our case
   public getMetaData(): playerMetaData {
     const firstEvent = this.events[0];
     const lastEvent = this.events[this.events.length - 1];
@@ -124,7 +125,7 @@ export class Replayer {
   public play(timeOffset = 0) {
     console.log('replay play ', timeOffset);
     this.timer.clear();
-    console.log('this.events in play replay ', this.events, this.events.length)
+    console.log('this.events in play replay ', this.events, this.events.length);
     this.baselineTime = this.events[0].timestamp + timeOffset;
     const actions = new Array<actionWithDelay>();
     for (const event of this.events) {
@@ -136,7 +137,7 @@ export class Replayer {
         actions.push({ doAction: castFn, delay: this.getDelay(event) });
       }
     }
-    console.log("action are ", actions);
+    console.log('action are ', actions);
     this.timer.addActions(actions);
     this.timer.start();
     this.emitter.emit(ReplayerEvents.Start);
@@ -211,7 +212,7 @@ export class Replayer {
     this.iframe = document.createElement('iframe');
     this.iframe.setAttribute('sandbox', 'allow-same-origin');
     this.iframe.setAttribute('scrolling', 'no');
-//    this.iframe.setAttribute('style', 'pointer-events: none');
+    //    this.iframe.setAttribute('style', 'pointer-events: none');
     this.wrapper.appendChild(this.iframe);
   }
 

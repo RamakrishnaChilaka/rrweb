@@ -2221,6 +2221,7 @@ var Timer = (function () {
     };
     return Timer;
 }());
+//# sourceMappingURL=timer.js.map
 
 var rules = function (blockClass) { return [
     "iframe, ." + blockClass + " { background: #ccc }",
@@ -2305,7 +2306,7 @@ var Replayer = (function () {
                 actions.push({ doAction: castFn, delay: this.getDelay(event) });
             }
         }
-        console.log("action are ", actions);
+        console.log('action are ', actions);
         this.timer.addActions(actions);
         this.timer.start();
         this.emitter.emit(ReplayerEvents.Start);
@@ -2777,7 +2778,6 @@ var Replayer = (function () {
     };
     return Replayer;
 }());
-//# sourceMappingURL=index.js.map
 
 var addCustomEvent = record.addCustomEvent;
 //# sourceMappingURL=index.js.map

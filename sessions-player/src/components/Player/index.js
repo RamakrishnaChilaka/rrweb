@@ -24,6 +24,7 @@ class SessionPlayer extends React.Component {
 
   componentDidUpdate() {
     var totalNumberOfBlocks = this.props.totalNumberOfBlocks;
+    var playbackTime = this.props.playbackTime;
     if (totalNumberOfBlocks && !this.kickStartedForGreaterThan3) {
       this.kickStartedForGreaterThan3 = true;
       this.props.kickStartFetching({
@@ -35,6 +36,7 @@ class SessionPlayer extends React.Component {
       var { lastConcatedIndex } = cleanAndAddData({
         globalValues: this.props.sessionData,
         lastConcatedIndex: this.props.lastConcatedIndex,
+        playbackTime: 35000,
       });
       this.props.updateLastConcatedIndex({ lastConcatedIndex });
     }

@@ -92,8 +92,10 @@
       };
     },
     computed: {
-      meta({ replayer }) {
-        return replayer.getMetaData();
+      meta({ replayer, playbackTime }) {
+        return {
+          totalTime: playbackTime,
+        }
       },
       percentage({ currentTime, meta }) {
         const percent = Math.min(1, currentTime / meta.totalTime);
@@ -129,7 +131,7 @@
       },
       play() {
         const { replayer, currentTime } = this.get();
-        console.log("inside play replayer and currentTime is ", replayer, currentTime)
+        console.log("inside play replayer and currentTime is ", replayer, currentTime, this.get())
         if (currentTime > 0) {
           replayer.resume(currentTime);
         } else {
@@ -144,7 +146,7 @@
       },
       toggle() {
         console.log("inside toggle pressed toggle ");
-        console.log("inside toggle this.playing ", this.get().isPlaying);
+        console.log("inside toggle this.playing ", this.get().isPlaying, this.get());
         const { isPlaying } = this.get();
         if (isPlaying) {
           this.pause();
@@ -175,6 +177,7 @@
         } else if (percent > 1) {
           percent = 1;
         }
+        console.log("Percent handleProgressClick ", percent);
         const timeOffset = meta.totalTime * percent;
         this.set({ currentTime: timeOffset });
         replayer.play(timeOffset);

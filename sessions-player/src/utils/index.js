@@ -48,7 +48,13 @@ export function concatEventsData(values, initialValue = []) {
   }, initialValue);
 }
 
-export function cleanAndAddData({ globalValues, lastConcatedIndex }) {
+export function setMetaData({ playbackTime }) {
+  window.replayerWebPlayer.setMetaData({
+    totalTime: playbackTime,
+  });
+}
+
+export function cleanAndAddData({ globalValues, lastConcatedIndex, playbackTime }) {
   var globalValues_t = globalValues.slice();
   globalValues_t = removeDuplicates({ globalValues: globalValues_t });
   globalValues_t = sortByBlockId({ globalValues: globalValues_t });
@@ -70,6 +76,7 @@ export function cleanAndAddData({ globalValues, lastConcatedIndex }) {
           data: {
             events: nextEvent.events,
             autoPlay: true,
+            playbackTime
           },
         });
       } else {

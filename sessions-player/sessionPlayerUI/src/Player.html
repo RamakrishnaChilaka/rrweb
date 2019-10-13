@@ -1,7 +1,7 @@
 <div class="rr-player" ref:player style="{playerStyle}">
   <div class="rr-player__frame" ref:frame { style }></div>
   {#if replayer}
-  <Controller { replayer } {showController} {autoPlay} on:fullscreen="fullscreen()" />
+  <Controller { replayer } {showController} {playbackTime} {autoPlay} on:fullscreen="fullscreen()" />
   {/if}
 </div>
 
@@ -32,6 +32,7 @@
         events: [],
         autoPlay: true,
         replayer: null,
+        playbackTime: 0,
       };
     },
     computed: {
@@ -86,6 +87,7 @@
       this.set({
         replayer,
       });
+      window.replayerWebPlayer = replayer;
       this.fullscreenListener = onFullscreenChange(() => {
         if (isFullscreen()) {
           setTimeout(() => {
