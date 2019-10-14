@@ -904,7 +904,7 @@ function polyfill() {
             .forEach;
     }
 }
-
+//# sourceMappingURL=utils.js.map
 
 var EventType;
 (function (EventType) {
@@ -952,7 +952,7 @@ var ReplayerEvents;
     ReplayerEvents["SkipEnd"] = "skip-end";
     ReplayerEvents["MouseInteraction"] = "mouse-interaction";
 })(ReplayerEvents || (ReplayerEvents = {}));
-
+//# sourceMappingURL=index.js.map
 
 //      
 // An event handler can take an optional event argument
@@ -1015,7 +1015,7 @@ function mitt(all                 ) {
 		}
 	};
 }
-
+//# sourceMappingURL=mitt.es.js.map
 
 var mittProxy = /*#__PURE__*/Object.freeze({
     default: mitt
@@ -1555,13 +1555,13 @@ var Timer = (function () {
     };
     return Timer;
 }());
-
+//# sourceMappingURL=timer.js.map
 
 var rules = function (blockClass) { return [
     "iframe, ." + blockClass + " { background: #ccc }",
     'noscript { display: none !important; }',
 ]; };
-
+//# sourceMappingURL=inject-style.js.map
 
 var SKIP_TIME_THRESHOLD = 10 * 1000;
 var SKIP_TIME_INTERVAL = 5 * 1000;

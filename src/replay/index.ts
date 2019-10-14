@@ -124,6 +124,7 @@ export class Replayer {
    */
   public play(timeOffset = 0) {
     console.log('replay play ', timeOffset);
+    // TODO: optmize the playing at a specific offset, by generating base html at regular intervals
     this.timer.clear();
     console.log('this.events in play replay ', this.events, this.events.length);
     this.baselineTime = this.events[0].timestamp + timeOffset;
