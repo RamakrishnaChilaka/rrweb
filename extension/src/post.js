@@ -74,7 +74,9 @@ function postMetaData() {
   console.log('post metadata is ');
   var payloadBody = {};
   var totalNumberOfBlocks = window.localStorage.getItem('currentBlockNumber');
+  var playerTime = window.localStorage.getItem('playerTime');
   payloadBody.totalNumberOfBlocks = totalNumberOfBlocks;
+  payloadBody.playerTime = playerTime;
   fetch(update_session, {
     method: 'PUT',
     body: JSON.stringify(payloadBody),
