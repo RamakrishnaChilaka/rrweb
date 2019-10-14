@@ -34,6 +34,7 @@ const Sessions = (
       return {
         ...state,
         totalNumberOfBlocks: action.payload.totalNumberOfBlocks,
+        playbackTime: action.payload.playbackTime,
       };
     case CREATE_REPLAYER_OBJ:
       let tmp = {
