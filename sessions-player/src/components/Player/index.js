@@ -36,7 +36,7 @@ class SessionPlayer extends React.Component {
       var { lastConcatedIndex } = cleanAndAddData({
         globalValues: this.props.sessionData,
         lastConcatedIndex: this.props.lastConcatedIndex,
-        playbackTime: 35000,
+        playbackTime,
       });
       this.props.updateLastConcatedIndex({ lastConcatedIndex });
     }
